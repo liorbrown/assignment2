@@ -1,198 +1,353 @@
 #include <stdexcept>
+#include <cmath>
+#include <iostream>
 #include "SquareMat.hpp"
 
-using namespace Matrix;
+
 using namespace std;
 
-SquareMat::SquareMat(size_t rows, size_t cols) : rows(rows), cols(cols){
-    if (!rows || !cols)
-        throw invalid_argument("Arguments must be positives 🫤");
+namespace Matrix{
+    SquareMat::SquareMat(size_t size) : size(size){
+        if (!size)
+            throw invalid_argument("Matrix size must be positive 🫤");
 
-    this->allocateMem();
-}
-
-void SquareMat::allocateMem()
-{
-    this->mat = new double *[rows];
-    
-    for (size_t i = 0; i < rows; i++)
-        this->mat[i] = new double[cols]{0}; 
-}
-
-void SquareMat::freeMem()
-{
-    if (this->mat)
-    {
-        for (size_t i = 0; i < this->rows; i++)
-            if (this->mat[i])
-                delete[] this->mat[i];
-                
-        delete[] this->mat;
+        this->allocateMem();
     }
-}
 
-void SquareMat::copyMem(const SquareMat &other)
-{
-    for (size_t i = 0; i < this->rows; i++)
-        for (size_t j = 0; j < this->cols; j++)
-            (*this)[i][j] = other[i][j];
-}
-
-double* SquareMat::operator[](size_t row) const
-{
-    return this->mat[row];
-}
-
-SquareMat SquareMat::operator-() const
-{
-    return SquareMat(0,0);
-}
-
-SquareMat SquareMat::operator+(const SquareMat &) const
-{
-    return SquareMat(0,0);
-}
-
-SquareMat SquareMat::operator*(const SquareMat &) const
-{
-    return SquareMat(0,0);
-}
-
-SquareMat SquareMat::operator%(const SquareMat &) const
-{
-    return SquareMat(0,0);
-}
-
-SquareMat SquareMat::operator%(int) const
-{
-    return SquareMat(0,0);
-}
-
-SquareMat SquareMat::operator/(int) const
-{
-    return SquareMat(0,0);
-}
-
-SquareMat SquareMat::operator^(size_t) const
-{
-    return SquareMat(0,0);
-}
-
-SquareMat SquareMat::operator~() const
-{
-    return SquareMat(0,0);
-}
-
-double SquareMat::operator!() const
-{
-    return 0.0;
-}
-
-SquareMat& SquareMat::operator-=(const SquareMat &)
-{
-    return (*this);
-}
-
-SquareMat& SquareMat::operator+=(const SquareMat &)
-{
-    return (*this);
-}
-
-SquareMat& SquareMat::operator++()
-{
-    return (*this);
-}
-
-SquareMat& SquareMat::operator++(int)
-{
-    return (*this);
-}
-
-SquareMat& SquareMat::operator--()
-{
-    return (*this);
-}
-
-SquareMat& SquareMat::operator--(int)
-{
-    return (*this);
-}
-
-SquareMat& SquareMat::operator*=(const SquareMat &)
-{
-    return (*this);
-}
-
-SquareMat& SquareMat::operator*=(double)
-{
-    return (*this);
-}
-
-SquareMat& SquareMat::operator%=(const SquareMat &)
-{
-    return (*this);
-}
-
-SquareMat& SquareMat::operator%=(int)
-{
-    return (*this);
-}
-
-bool SquareMat::operator==(const SquareMat &) const
-{
-    return false;
-}
-
-bool SquareMat::operator!=(const SquareMat &) const
-{
-    return false;
-}
-
-bool SquareMat::operator<(const SquareMat &) const
-{
-    return false;
-}
-
-bool SquareMat::operator<=(const SquareMat &) const
-{
-    return false;
-}
-
-bool SquareMat::operator>(const SquareMat &) const
-{
-    return false;
-}
-
-bool SquareMat::operator>=(const SquareMat &) const
-{
-    return false;
-}
-
-SquareMat& SquareMat::operator=(const SquareMat &other)
-{
-    if (this != &other)
+    SquareMat& SquareMat::operator=(const SquareMat &other)
     {
-        if (this->rows != other.rows || this->cols != other.cols)
+        if (this != &other)
         {
-            this->freeMem(); 
-            
-            this->rows = other.rows;
-            this->cols = other.cols;
-            this->allocateMem();
+            if (this->size != other.size)
+            {
+                this->freeMem(); 
+                
+                this->size = other.size;
+                this->allocateMem();
+            }
+
+            this->copyMem(other);
         }
 
-        this->copyMem(other);
+        return *this;
     }
 
-    return *this;
-}
+    void SquareMat::allocateMem()
+    {
+        this->mat = new double* [this->size];
+        
+        for (size_t i = 0; i < this->size; i++)
+            this->mat[i] = new double[this->size]{0.0}; 
+    }
 
-SquareMat operator*(const double scalar,const SquareMat& mat)
-{
-    return mat;
-}
+    void SquareMat::freeMem()
+    {
+        if (this->mat)
+        {
+            for (size_t i = 0; i < this->size; i++)
+                if (this->mat[i])
+                    delete[] this->mat[i];
+                    
+            delete[] this->mat;
+        }
+    }
 
-ostream& operator<<(ostream& stream, SquareMat mat)
-{
-    return (stream);
+    void SquareMat::copyMem(const SquareMat &other)
+    {
+        if (this->size != other.size)
+            throw invalid_argument("Matrices not in the same size 🫤");
+
+        for (size_t i = 0; i < this->size; i++)
+            for (size_t j = 0; j < this->size; j++)
+                (*this)[i][j] = other[i][j];
+    }
+
+    double SquareMat::getSum() const
+    {
+        double result = 0;
+
+        for (size_t i = 0; i < this->size; i++)
+            for (size_t j = 0; j < this->size; j++)
+                result += (*this)[i][j];
+        
+        return result;
+    }
+
+    SquareMat SquareMat::getIdentityMat() const
+    {
+        SquareMat result{this->size};
+
+        for (size_t i = 0; i < this->size; i++)
+            result[i][i] = 1.0;
+
+        return result;
+    }
+
+    SquareMat *SquareMat::getMinor(const size_t col) const
+    {
+        if (this->size == 1)
+            throw invalid_argument("Can't calculate minor for matrix in size 1 🫤");
+        
+        SquareMat* result = new SquareMat(this->size - 1);
+
+        for (size_t i = 0; i < this->size - 1; i++)
+            for (size_t j = 0; j < this->size - 1; j++)
+                (*result)[i][j] = (*this)[i + 1][j < col ?  j : j + 1];            
+        
+        return result;
+    }
+
+    SquareMat& SquareMat::operator-=(const SquareMat& other)
+    {
+        if (this->size != other.size)
+            throw invalid_argument("Matrices not in the same size 🫤");
+        
+        for (size_t i = 0; i < this->size; i++)
+            for (size_t j = 0; j < this->size; j++)
+                (*this)[i][j] -= other[i][j];                                
+        
+        return (*this);
+    }
+
+    SquareMat& SquareMat::operator+=(const SquareMat& other)
+    {
+        if (this->size != other.size)
+            throw invalid_argument("Matrices not in the same size 🫤");
+        
+        for (size_t i = 0; i < this->size; i++)
+            for (size_t j = 0; j < this->size; j++)
+                (*this)[i][j] += other[i][j];                                
+        
+        return (*this);
+    }
+
+    SquareMat& SquareMat::operator%=(const SquareMat& other)
+    {
+        if (this->size != other.size)
+            throw invalid_argument("Matrices not in the same size 🫤");
+        
+        for (size_t i = 0; i < this->size; i++)
+            for (size_t j = 0; j < this->size; j++)
+                (*this)[i][j] *= other[i][j];                                
+        
+        return (*this);
+    }
+
+    SquareMat& SquareMat::operator%=(const int scalar)
+    {
+        if (!scalar)
+            throw invalid_argument("Can't divide by zero 🫤");
+        
+        for (size_t i = 0; i < this->size; i++)
+            for (size_t j = 0; j < this->size; j++)
+                (*this)[i][j] = fmod((*this)[i][j], scalar);
+        
+        return (*this);
+    }
+
+    SquareMat& SquareMat::operator/=(const double scalar)
+    {
+        if (!scalar)
+            throw invalid_argument("Can't divide by zero 🫤");
+        
+        for (size_t i = 0; i < this->size; i++)
+            for (size_t j = 0; j < this->size; j++)
+                (*this)[i][j] /= scalar;                                
+        
+        return (*this);
+    }
+
+    SquareMat& SquareMat::operator++()
+    {
+        for (size_t i = 0; i < this->size; i++)
+            for (size_t j = 0; j < this->size; j++)
+                (*this)[i][j]++;
+        
+        return (*this);
+    }
+
+    SquareMat SquareMat::operator++(int)
+    {
+        SquareMat result{*this};
+
+        ++*this;
+
+        return (result);
+    }
+
+    SquareMat& SquareMat::operator--()
+    {
+        for (size_t i = 0; i < this->size; i++)
+            for (size_t j = 0; j < this->size; j++)
+                (*this)[i][j]--;
+        
+        return (*this);
+    }
+
+    SquareMat SquareMat::operator--(int)
+    {
+        SquareMat result{*this};
+
+        --*this;
+
+        return (result);
+    }
+
+    SquareMat& SquareMat::operator*=(const double scalar)
+    {
+        for (size_t i = 0; i < this->size; i++)
+            for (size_t j = 0; j < this->size; j++)
+                (*this)[i][j] *= scalar;
+        
+        return (*this);
+    }
+
+    SquareMat& SquareMat::operator*=(const SquareMat& other)
+    {
+        if (this->size != other.size)
+            throw invalid_argument("Matrices sizes not fit to by multipied 🫤");
+
+        SquareMat copy{*this};
+                
+        for (size_t i = 0; i < this->size; i++)
+            for (size_t j = 0; j < this->size; j++)
+            {
+                (*this)[i][j] = 0.0;
+
+                for (size_t k = 0; k < this->size; k++)
+                    (*this)[i][j] += (copy[i][k] * other[k][j]);
+            }
+        
+        return (*this);
+    }
+
+    SquareMat SquareMat::operator-() const
+    {
+        SquareMat result{this->size};
+
+        return (result -= *this);
+    }
+
+    bool SquareMat::operator==(const SquareMat& other) const
+    {
+        return (this->getSum() == other.getSum());
+    }
+
+    bool SquareMat::operator!=(const SquareMat& other) const
+    {
+        return (this->getSum() != other.getSum());
+    }
+
+    bool SquareMat::operator<(const SquareMat& other) const
+    {
+        return (this->getSum() < other.getSum());
+    }
+
+    bool SquareMat::operator<=(const SquareMat& other) const
+    {
+        return (this->getSum() <= other.getSum());
+    }
+
+    bool SquareMat::operator>(const SquareMat& other) const
+    {
+        return (this->getSum() > other.getSum());
+    }
+
+    bool SquareMat::operator>=(const SquareMat& other) const
+    {
+        return (this->getSum() >= other.getSum());
+    }
+
+    double SquareMat::operator!() const
+    {
+        if (this->size == 1)
+            return (*this)[0][0];
+        
+        double result = 0;
+
+        for (size_t i = 0; i < this->size; i++)
+        {
+            SquareMat* minor = this->getMinor(i);
+
+            result += (pow(-1, i) * (*this)[0][i] * !(*minor));
+
+            delete minor;
+        }
+        
+        return result;
+    }
+
+    ostream& operator<<(ostream& stream, const SquareMat& mat)
+    {
+        for (size_t i = 0; i < mat.size; i++)
+        {
+            stream << '|';
+
+            for (size_t j = 0; j < mat.size; j++)
+                stream << mat[i][j] << '|';
+
+            stream << endl;
+        }
+        
+        return (stream);
+    }
+
+    SquareMat operator+(SquareMat left, const SquareMat& right)
+    {
+        return (left += right);
+    }
+
+    SquareMat operator*(SquareMat left, const SquareMat& right)
+    {
+        return (left *= right);
+    }
+
+    SquareMat operator*(SquareMat mat, const double scalar)
+    {
+        return (mat *= scalar);
+    }
+
+    SquareMat operator*(const double scalar,const SquareMat& mat)
+    {
+        return (mat * scalar);
+    }
+
+    SquareMat operator%(SquareMat left, const SquareMat& right)
+    {
+        return (left %= right);
+    }
+
+    SquareMat operator%(SquareMat mat, const int scalar)
+    {
+        return (mat %= scalar);
+    }
+
+    SquareMat operator/(SquareMat mat, const double scalar)
+    {
+        return (mat /= scalar);
+    }
+
+    SquareMat operator^(SquareMat mat, const size_t exp)
+    {
+        if (!exp)
+            return (mat.getIdentityMat());
+        
+        for (size_t i = 1; i < exp; i++)
+            mat *= mat;
+        
+        return mat;
+    }
+
+    SquareMat operator~(SquareMat mat)
+    {
+        for (size_t i = 0; i < mat.size - 1; i++)
+            for (size_t j = i + 1; j < mat.size; j++)
+            {
+                double temp = mat[i][j];
+                mat[i][j] = mat[j][i];
+                mat[j][i] = temp;
+            }                                
+        
+        return mat;
+    }  
 }
