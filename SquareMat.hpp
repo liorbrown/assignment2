@@ -1,4 +1,7 @@
 #include <cstddef>
+#include <iostream>
+
+using namespace std;
 
 namespace Matrix{
     class SquareMat{
@@ -10,7 +13,6 @@ namespace Matrix{
             void freeMem();
             void copyMem(const SquareMat&);
             double getSum() const;
-            SquareMat getIdentityMat() const;
             SquareMat* getMinor(const size_t col) const;
             
         public:
@@ -42,10 +44,20 @@ namespace Matrix{
             bool operator>=(const SquareMat&) const;
 
             SquareMat operator-() const;
+            SquareMat operator^(const size_t exp);
             double operator!() const;
 
             friend ostream& operator<<(ostream&, const SquareMat&);
-            friend SquareMat operator^(SquareMat mat, const size_t exp);
-            friend SquareMat operator~(SquareMat mat);
+            friend SquareMat operator~(SquareMat mat);        
     };
+
+    SquareMat operator-(SquareMat left, const SquareMat& right);
+    SquareMat operator+(SquareMat left, const SquareMat& right);
+    SquareMat operator*(SquareMat left, const SquareMat& right);        
+    SquareMat operator*(SquareMat mat, const double scalar);        
+    SquareMat operator*(const double scalar,const SquareMat& mat);        
+    SquareMat operator%(SquareMat left, const SquareMat& right);        
+    SquareMat operator%(SquareMat mat, const int scalar);        
+    SquareMat operator/(SquareMat mat, const double scalar);        
+    SquareMat operator~(SquareMat mat);
 }

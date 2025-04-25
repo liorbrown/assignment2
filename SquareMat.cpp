@@ -1,10 +1,6 @@
 #include <stdexcept>
 #include <cmath>
-#include <iostream>
 #include "SquareMat.hpp"
-
-
-using namespace std;
 
 namespace Matrix{
     SquareMat::SquareMat(size_t size) : size(size){
@@ -70,16 +66,6 @@ namespace Matrix{
             for (size_t j = 0; j < this->size; j++)
                 result += (*this)[i][j];
         
-        return result;
-    }
-
-    SquareMat SquareMat::getIdentityMat() const
-    {
-        SquareMat result{this->size};
-
-        for (size_t i = 0; i < this->size; i++)
-            result[i][i] = 1.0;
-
         return result;
     }
 
@@ -258,6 +244,19 @@ namespace Matrix{
         return (this->getSum() >= other.getSum());
     }
 
+    SquareMat SquareMat::operator^(const size_t exp)
+    {
+        SquareMat result{this->size};
+
+        for (size_t i = 0; i < this->size; i++)
+            result[i][i] = 1.0;
+        
+        for (size_t i = 0; i < exp; i++)
+            result *= *this;
+        
+        return result;
+    }
+
     double SquareMat::operator!() const
     {
         if (this->size == 1)
@@ -279,20 +278,35 @@ namespace Matrix{
 
     ostream& operator<<(ostream& stream, const SquareMat& mat)
     {
+        stream << endl;
+
+        for (size_t j = 0; j < 9 * mat.size + 1; j++)
+                stream << '-';
+            
+        stream << endl;
+
         for (size_t i = 0; i < mat.size; i++)
         {
-            stream << '|';
-
             for (size_t j = 0; j < mat.size; j++)
-                stream << mat[i][j] << '|';
+                stream << '|' << to_string(mat[i][j]);
 
-            stream << endl;
+            stream << '|' << endl;
+
+            for (size_t j = 0; j < 9 * mat.size + 1; j++)
+                stream << '-';
+            
+                stream << endl;
         }
         
         return (stream);
     }
 
-    SquareMat operator+(SquareMat left, const SquareMat& right)
+    SquareMat operator-(SquareMat left, const SquareMat &right)
+    {
+        return (left -= right);
+    }
+
+    SquareMat operator+(SquareMat left, const SquareMat &right)
     {
         return (left += right);
     }
@@ -325,17 +339,6 @@ namespace Matrix{
     SquareMat operator/(SquareMat mat, const double scalar)
     {
         return (mat /= scalar);
-    }
-
-    SquareMat operator^(SquareMat mat, const size_t exp)
-    {
-        if (!exp)
-            return (mat.getIdentityMat());
-        
-        for (size_t i = 1; i < exp; i++)
-            mat *= mat;
-        
-        return mat;
     }
 
     SquareMat operator~(SquareMat mat)

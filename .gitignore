@@ -1,3 +1,6 @@
 doctest.hpp:Zone.Identifier
 GraphTest.cpp:Zone.Identifier
 SquareMat.o
+main.o
+main.out
+SquareMatTest.o
