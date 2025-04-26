@@ -1,3 +1,5 @@
+// liorbrown@outlook.co.il
+
 #include <stdexcept>
 #include <cmath>
 #include "SquareMat.hpp"

@@ -1,3 +1,5 @@
+// liorbrown@outlook.co.il
+
 #include <cstddef>
 #include <iostream>
 
@@ -20,6 +22,7 @@ namespace Matrix{
             SquareMat(const SquareMat& other): SquareMat(other.size) {this->copyMem(other);}
             SquareMat& operator=(const SquareMat& other);
             ~SquareMat(){ this->freeMem();}            
+            size_t getSize() const {return this->size;} 
 
             double* operator[](size_t row) const {return this->mat[row];}
 
@@ -48,7 +51,7 @@ namespace Matrix{
             double operator!() const;
 
             friend ostream& operator<<(ostream&, const SquareMat&);
-            friend SquareMat operator~(SquareMat mat);        
+            friend SquareMat operator~(SquareMat mat);  
     };
 
     SquareMat operator-(SquareMat left, const SquareMat& right);

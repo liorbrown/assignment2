@@ -1,3 +1,5 @@
+// liorbrown@outlook.co.il
+
 #include <stdlib.h>
 
 #include "SquareMat.hpp"
