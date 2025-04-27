@@ -100,7 +100,7 @@ namespace Matrix{
             for (size_t j = 0; j < minorSize; j++)
                 // This minor is work only for first row, so the row of each cell in minor matrix
                 // contains the value of cell in row i + 1 in origin matrix.
-                // The column index depends if current column smaller than given column
+                // The column index depends if current column less than given column
                 // so take the same column as original,
                 // Oterwise, skip the given column to next one
                 (*result)[i][j] = (*this)[i + 1][j < col ?  j : j + 1];            
@@ -259,7 +259,7 @@ namespace Matrix{
         // Create zero matrix in same size ad this
         SquareMat result{this->size};
 
-        // Return the substruction of zero matrix with this matrix
+        // Return the subtraction of zero matrix with this matrix
         return (result -= *this);
     }
 

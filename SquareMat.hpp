@@ -65,7 +65,7 @@ namespace Matrix{
             /// @brief Substruct other matrix from this matrix, by substruct value of each cell
             /// by its corresponding cell in the other matrix
             /// @param other Other matrix to subtruct from this matrix
-            /// @return This matrix after substruction
+            /// @return This matrix after subtraction
             SquareMat& operator-=(const SquareMat& other);
 
             /// @brief Summerize other matrix with this matrix, by Summerize value of each cell
@@ -130,14 +130,14 @@ namespace Matrix{
             /// @return True - if sum is not equal, False - otherwise
             bool operator!=(const SquareMat& other) const;
 
-            /// @brief Check if this matrix numbers sum is smaller than other matrix 
+            /// @brief Check if this matrix numbers sum is less than other matrix 
             /// @param other Other matrix to compare to
-            /// @return True - if sum smaller, False - otherwise
+            /// @return True - if sum less, False - otherwise
             bool operator<(const SquareMat& other) const;
 
-            /// @brief Check if this matrix numbers sum is smaller or equal than other matrix 
+            /// @brief Check if this matrix numbers sum is less or equal than other matrix 
             /// @param other Other matrix to compare to
-            /// @return True - if sum smaller or equal, False - otherwise
+            /// @return True - if sum less or equal, False - otherwise
             bool operator<=(const SquareMat& other) const;
 
             /// @brief Check if this matrix numbers sum is greater than other matrix 
@@ -169,11 +169,11 @@ namespace Matrix{
 
     // ---------------- Out class operators ----------------------
 
-    /// @brief Return the Substruction of right matrix from left matrix, by substruct value of each cell
+    /// @brief Return the subtraction of right matrix from left matrix, by substruct value of each cell
     /// by its corresponding cell in the other matrix
     /// @param left Matrix to subtruct from it
     /// @param right Matrix to subtruct from left matrix
-    /// @return New matrix that represent Substruction result
+    /// @return New matrix that represent subtraction result
     SquareMat operator-(SquareMat left, const SquareMat& right);
 
     /// @brief Return the Summerize of 2 matrices, by summerize value of each pair of cells

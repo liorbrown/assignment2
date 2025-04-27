@@ -143,7 +143,7 @@ TEST_CASE("Equality operators")
     CHECK_FALSE(mat < *globalMat1);
     CHECK(mat > *globalMat1);
 
-    // Checking when first matrix is smaller
+    // Checking when first matrix is less than seconed
     mat[0][1] -= 10;
 
     CHECK_FALSE(mat == *globalMat1);

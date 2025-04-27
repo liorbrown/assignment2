@@ -9,7 +9,7 @@ Main: buildMain
 test: buildTest
 	./test.out
 
-valgrind: build buildTest
+valgrind: buildMain buildTest
 	valgrind --leak-check=yes ./main.out
 	valgrind --leak-check=yes ./test.out
 
