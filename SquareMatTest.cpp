@@ -6,7 +6,7 @@
 #include "SquareMat.hpp"
 
 #define DEFAULT_SIZE (3)
-#define PERCISION (0.0001)
+#define PRECISION (0.0001)
 
 using namespace Matrix;
 
@@ -17,7 +17,7 @@ SquareMat* identityMat;
 
 bool isEqual(const double d1, const double d2)
 {
-    return (abs(d1 - d2) < PERCISION);
+    return (abs(d1 - d2) < PRECISION);
 }
 
 bool isEqual(const SquareMat& mat1, const SquareMat& mat2)
